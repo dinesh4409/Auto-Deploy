@@ -1,0 +1,68 @@
+---
+- name: Install Docker and Jenkins on Jenkins Server
+  hosts: jenkins_host
+  become: yes
+  tasks:
+    - name: Update package lists
+      apt:
+        update_cache: yes
+        
+    - name: Install Java 17
+      apt:
+        name: openjdk-17-jre-headless
+        state: present
+
+    - name: Download Jenkins key
+      get_url:
+        url: https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
+        dest: /usr/share/keyrings/jenkins-keyring.asc
+        mode: '0644'
+
+    - name: Add Jenkins repository
+      shell: echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/" | tee /etc/apt/sources.list.d/jenkins.list > /dev/null
+
+    - name: Update package lists after adding Jenkins repo
+      apt:
+        update_cache: yes
+
+    - name: Install Jenkins
+      apt:
+        name: jenkins
+        state: present
+
+    - name: Ensure Jenkins service is running
+      systemd:
+        name: jenkins
+        enabled: yes
+        state: started
+
+    - name: Add Jenkins user to the docker group
+      user:
+        name: jenkins
+        groups: docker
+        append: yes
+
+    - name: Add Jenkins to sudoers (NOPASSWD)
+      lineinfile:
+        path: /etc/sudoers
+        line: "jenkins ALL=(ALL) NOPASSWD:ALL"
+        validate: "visudo -cf %s"
+        state: present
+
+    - name: Wait for Jenkins to initialize
+      pause:
+        seconds: 30
+
+    - name: Retrieve Jenkins initial admin password
+      command: cat /var/lib/jenkins/secrets/initialAdminPassword
+      register: jenkins_admin_password
+      changed_when: false
+
+    - name: Display Jenkins initial admin password
+      debug:
+        msg: "Jenkins Initial Admin Password: {{ jenkins_admin_password.stdout }}"
+
+    - name: Reboot the server
+      reboot:
+        msg: "Rebooting after Jenkins installation"
+        reboot_timeout: 600
