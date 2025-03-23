@@ -245,9 +245,9 @@ This project successfully demonstrates the automation of *infrastructure provisi
 
 ## Author
 
-****Satya Praveen M****  
+****Dinesh Kumar Challa****  
 Cloud and Devops Enthusiast  
-- **LinkedIn**: [https://www.linkedin.com/in/Satya Praveen M](https://www.linkedin.com/in/satya-praveen-m-36442725b/)  
-- **GitHub**: [https://github.com/Satya Praveen M](https://github.com/22MH1A42H7)  
+- **LinkedIn**: [https://www.linkedin.com/in/dinesh kumar challa](https://www.linkedin.com/in/dinesh-kumar-challa-25525b26b/)  
+- **GitHub**: [https://github.com/dinesh kumar challa](https://github.com/dinesh4409)  
 
 ---
